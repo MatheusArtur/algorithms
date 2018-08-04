@@ -1,0 +1,313 @@
+#+STARTUP: overview
+#+TITLE: Data Structures
+#+CREATOR: Matheus Costa (macc)
+* Notes and Decomentation references
+* Dynamic memory allocation
+# Context
+When using a N size array, and you want to create more arrays for the program of various sizes; N, N1, N2, N3... Nn. 
+This is really bad, especially if all arrays are supposed to represent one thing, only difference being the size.
+Use the stdlib functions =malloc=, =calloc=, =realloc, =free= to manipulate the Array in various ways.
+
+#+BEGIN_SRC c
+  int n;
+  scanf("%d", &n); // Size of the malloc (int).
+
+  int *v;
+  v = malloc(n * sizeof(int));
+  v = calloc(n * sizeof(int)); // Now every position allocated is set to value 0
+  printf("%ld\n", (n * sizeof(int)));
+
+    n = 3;
+  v = realloc(n * sizeof(int)); // Resizes the original space to 3.
+  printf("%ld\n", (n * sizeof(int)));
+#+END_SRC
+
+** Memory Leak
+# Context
+Sometimes allocating memory can go wrong, usually on dead-end functions/Loops. [[https://github.com/Ufal20172-MACC-LAPCS/teaching][More info about how the memory leak behavior.]]
+
+#+BEGIN_SRC c
+while(1){
+  v = malloc(9999 * sizeof(int));
+ }
+#+END_SRC
+
+Using the =free= function to kill the leak.
+#+BEGIN_SRC c
+  while(1){
+    v = malloc(9999 * sizeof(int));
+    free(v); // kills the leak
+   }
+#+END_SRC
+
+* Pointers to Functions
+# Context
+Having to switch cases very often or using multiple functions to eventually run a very particular piece of code is garbage.
+Instead, try to create functions and pass them as arguments depending on what you need.
+
+#+BEGIN_SRC c
+  int map(int (*f)(int x), int j, int i, int array[]){
+    if(i == j){
+      return;
+    }
+    array[i] = (*f)(i);
+
+    map((*f), j, i+1, array);
+  }
+
+  int square(int x){
+    return x*x;
+  }
+
+  int cube(int x){
+    return x*x*x;
+  }
+
+  int fatorial(int x){
+    if(x <= 1){
+      return 1;
+    }
+    return x * fatorial(x-1);
+  }
+
+  map(fatorial, size, array);
+  map(square, size, array); 
+  map(cube, size, array);
+#+END_SRC
+
+* Searching algorithms
+** Linear Search
+   The more intuitive type of search, but not really optimal because in the worst case it's =n= (going throught the entire array).
+
+#+BEGIN_SRC c
+  int linear_search(int array[], int size, int element){
+    int i;
+    for(i=0;i<size;i++){
+      if(array[i] == element){
+        return i;
+      }
+    }
+  }
+#+END_SRC
+
+** Binary Search
+   This recursive binary search functions discard half of the options after every call.
+
+#+BEGIN_SRC c
+  int BinarySearch(int array[], int top, int bottom, int element){
+    int middle = floor(((top+bottom) * pow(2, -1)));
+    if(array[middle]> element){
+       BinarySearch(array, middle-1, bottom, element);
+    }
+    else if (array[middle] < element){
+      BinarySearch(array, top, middle-1, element);
+    }
+    else{
+      return middle;
+    }
+  }
+#+END_SRC
+* Linked lists - Intro
+** What are data structures?
+
+A good data structure would be an array. But,
+
+# Advantages of array:
+Being so easy-to-use and intuitive.
+
+# Disvantages of array
+A shitfest to realloc and becomes pretty couter-intuitive for complex use.
+
+# Acessing non-valid positions
+In C, it gets a n from memory.
+In other languages like java, it warns.
+
+** Linked Lists
+
+# Pointers are used to link each node of our list
+
+fa -> fb -> nil
+
+where fX is the guy, and arrow is the pointer.
+
+# Versatility
+
+The liked list is powerful. It can easily be resized, just point it to (eg; ff) instead of nil.
+
+# Why?
+
+It can be used to write specifically FREE-Memory instead of overwriting it.
+
+# How?
+Try this C code, look how it recursively the structure is called with a pointer. It has a structure with a item and a pointer to a new structure.
+ #+BEGIN_SRC c
+   #include <stdio.h>
+
+   struct node{
+     int item;
+     node *next;
+   }
+
+   int main(void){
+     return 0;
+   }
+ #+END_SRC
+
+** Applying create, add, search and many other functions in linked list.
+*** Creating elements
+#+BEGIN_SRC c
+  node* create_liked_list(){
+    return NULL;
+  }
+#+END_SRC
+*** Adding elements
+#+BEGIN_SRC c
+ node* add(node *head, int item){
+    node *new_mode = (node*) malloc(sizeof(node));
+    new_node->item = item;
+    new_node->next = head;
+    return new_node;
+  }
+#+END_SRC
+*** Search function
+#+BEGIN_SRC c
+  node* search(node *head, int item){
+    while(*head != NULL){
+      if(*head->item == item){
+        return *head;
+      }
+      head = head->next;
+    }
+      return NULL;    
+  }
+#+END_SRC
+*** Remove function
+# This is a tricky one, you'll need to use a pointer to save the previous position and point it to the current->next
+#+BEGIN_SRC c
+//TODO
+#+END_SRC
+** Void, and fuction as a pointer
+Well, instead of having for example, a integer and a pointer, you have a pointer to another list (structure) of passagers, students, whatever..
+|----------+-----+----------+-----+----------+-----|
+| 2        | ->  | 5        | ->  | 9        | ->  |
+|----------+-----+----------+-----+----------+-----|
+| *bellow* | ->  | *bellow* | ->  | *bellow* | ->  |
+| passager | nil | passager | nil | passager | nil |
+|----------+-----+----------+-----+----------+-----|
+
+*** Void can point to almost everything!
+This can be pretty useful to change and reutilize the code.
+#+BEGIN_SRC c
+  struct node{
+    void* item;
+    node* next;
+  }
+#+END_SRC
+
+# But notice: In algorithims like the search one, you cannot check (*void == (void)item), so you'll be making a specific search function and pass it with an pointer.
+So, lets create a universal search function.
+#+BEGIN_SRC c
+// TODO
+node* search(node *head, void item){
+  while(*head != NULL){
+    if(*head->item == item){
+      return *head;
+    }
+    head = head->next;
+  }
+    return NULL;    
+}
+//TODO
+#+END_SRC
+* Stack
+# Context
+  For dennying acess 
+
+
+# "LIFO" - Last In, First Out.
+  LIFO consists in tree main operations:
+
+  - =Push=, adds a element to the stack top
+  - =Pop=, removes the stack top element
+  - =Peek=, shows the stack top element
+
+
+** Creating a Stack
+
+#+BEGIN_SRC c
+  #define MAX_STACK_SIZE 10
+
+  struct stack{
+    int current_size;
+    int items(MAX_STACK_SIZE);
+  };
+
+  stack* create_stack(){
+    stack *new_stack = (stack*) malloc(sizeof(stack));
+    new_stack -> current_size = 0;
+    return new_stack;
+  }
+#+END_SRC
+
+** PUSH function
+
+#+BEGIN_SRC c
+  void push(stack *stack, int item){
+    if(stack->current_size == MAX_STACK_SIZE){
+      printf("Stack Overflow\n");
+    }
+    else{
+      stack->items[stack->current_size++] = item; ++ -- 
+    }
+  }
+#+END_SRC
+
+*** Stack with lists and PUSH function
+
+    Note how the =push= above and =push_list= have similar headers due to abstractions.
+#+BEGIN_SRC c
+  struct *node{
+    int item;
+    node *next;
+  }
+
+  struct stack{
+    node *top
+  }
+
+  stack* create_stack(){
+    stack *new_stack = (stack*) malloc(sizeof(stack));
+    new_stack->top = NULL;
+    return new_stack;
+  }
+    
+  void push_list(stack *stack, int item){
+    node *new_top = (node*) malloc(sizeof(node));
+    new_top->item = item;
+    new_top->next = stack->top;
+    stack->top = new_top;
+  }
+#+END_SRC
+
+** POP Function
+#+BEGIN_SRC c
+  int pop(stack *stack){
+    if(is_empty(stack)){
+      printf("Stack underflow\n");
+      return -1;
+    }
+    else{
+      return stack->items[--stack->current_size];
+    }
+  }
+
+  int peek(stack *stack){
+    if(is_empty(stack)){
+      printf("Stack underflow\n");
+      return -1;
+    }
+    else{
+      return stack->items[stack->current_size - 1];
+    }
+  }
+#+END_SRC
