@@ -162,33 +162,33 @@ void insertion(int *v, int size){
 ** What are data structures?
 A good data structure would be an array. But,
 
-# Advantages of array:
+- Advantages of array:
 Being so easy-to-use and intuitive.
 
-# Disvantages of array
+- Disvantages of array
 A shitfest to realloc and becomes pretty couter-intuitive for complex use.
 
-# Acessing non-valid positions
+- Acessing non-valid positions
 In C, it gets a n from memory.
 In other languages like java, it warns.
 
 ** Linked Lists
 
-# Pointers are used to link each node of our list
+- Pointers are used to link each node of our list
 
 fa -> fb -> nil
 
 where fX is the guy, and arrow is the pointer.
 
-# Versatility
+- Versatility
 
 The liked list is powerful. It can easily be resized, just point it to (eg; ff) instead of nil.
 
-# Why?
+- Why?
 
 It can be used to write specifically FREE-Memory instead of overwriting it.
 
-# How?
+- How?
 Try this C code, look how it recursively the structure is called with a pointer. It has a structure with a item and a pointer to a new structure.
  #+BEGIN_SRC c
    typedef struct node{
@@ -271,10 +271,10 @@ node* search(node *head, void item){
     - [ ] Review
     - [ ] Add Stuff
     - [ ] TODO
-# Context
+- Context
   TODO
 
-# "LIFO" - Last In, First Out.
+- "LIFO" - Last In, First Out.
   LIFO consists in tree main operations:
 
   - =Push=, adds a element to the stack top
