@@ -1,0 +1,363 @@
+#+STARTUP: overview
+#+TITLE: Introduction to Algorithms (Book)
+#+CREATOR: Matheus Costa (macc)
+* Notes and references
+  On it's core this file is a resume containing answers and notes of the book "Introduction to Algorithms, 3rd ed (2009), Thomas H. Cormen.." published by MIT. It also have stuff from my data structure class.
+* DONE Algorithms Efficiency
+   Algorithm efficiency is actually something, and to measure it you need to consider two things: First being a constant =c=, that will resolve around many variables from languague compiler/interpreter/assembler binary speed to the computer itself. The second one focus on the number of interactions, and it's represented by a mathematical expression based on the algorithm. Combine the two, and you have how many instructions you need to run certain algorithm. 
+   The constant =c= often impacts little on the run, so it's pretty much useless. 
+
+   A good example for measuring efficiency it's comparing the Linear Seach to the Binary Search.
+#+BEGIN_SRC c
+  int linear_search(int *v, int size, int item){
+    int i;
+    for(i=0;i<size;i++){
+      if(v[i] == item){
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  int binary_search(int *v, int bottom, int top, int item){
+    int middle = floor((top + bottom) * pow(2, -1));
+    if(v[middle] < item){
+      binary_search(v, middle, top, item);
+    }
+    else if (v[middle] > item){
+      binary_search(v, bottom, middle, item);
+    }
+    return middle;    
+  }
+#+END_SRC
+
+   For a 0-100 array number, let's compare both when searching for 73.
+#+BEGIN_EXAMPLE
+Linear search found 73 with 73 interactions!
+
+Binary search at 50
+Binary search at 75
+Binary search at 62
+Binary search at 68
+Binary search at 71
+Binary search at 73
+#+END_EXAMPLE
+   
+   Binary found with only 6 intructions! That's because linear runs at (n) and binary at log(n): [[./img/search.png]]
+
+   Sorting algorithms are also nice for comparing efficiency. Let's see how little the constant does when comparing a Merge sort =c1= versus Insertion sort =c2=, c1 > c2.
+   Merge runs at =n * log(n)=, insertion =2^n= and =n= = objects.
+
+#+BEGIN_SRC c
+  double insertion(double n){
+    return  8 * pow(2, n);
+  }
+  double merge(double n){
+    return  64 * (n * log(n));
+  }
+#+END_SRC
+   Output: 
+#+BEGIN_EXAMPLE
+  2 objects:
+   Insert = 32
+   Merge = 89
+
+  3 objects:
+   Insert = 64
+   Merge = 211
+
+  4 objects:
+   Insert = 128
+   Merge = 355
+
+  5 objects:
+   Insert = 256
+   Merge = 515
+
+  6 objects:
+   Insert = 512
+   Merge = 688
+
+  7 objects:
+   Insert = 1024
+   Merge = 872
+
+  At 7 objects, Merge has 872 instructions nedded to sort, 152 less than insert
+#+END_EXAMPLE
+   
+   Even with a 8 times bigger =c=, merge outruns the insertion from few as 7 numbers.
+
+* TODO Sorting algorithms
+- [ ] TODO [0/6]
+  - [ ] Insertion
+  - [ ] Merge
+  - [ ] Quicksort
+  - [ ] qsort() function
+  - [ ] Provide a proper explanation
+  - [ ] codes at /src
+
+** Insertion Sort
+
+   Insertion takes a array index number as a key and compares to all previous positions possible until =key > array[previous]=.
+#+BEGIN_SRC c
+  void insertion(int *v, int size){
+    int key_t, i, j;
+    for(j=1;j<size;++j){
+      key_t = v[j];
+      i = j - 1;
+      while(i>=0 && v[i] > key_t){
+        v[i+1] = v[i];
+        v[i] = key_t;
+        --i;
+      }
+    }
+  }
+#+END_SRC
+   Note that it starts with j = [FIRST+1] array position, since of course you'll be comparing to previous numbers.
+
+** Merge sort
+
+#+BEGIN_SRC c
+void merge(int *v, int l_index, int r_index){
+  if(l_index >= r_index){
+    return ;
+  }
+  int l, r, key_t, aux;
+  l = l_index;
+  r = r_index;
+  key_t = v[(l_index + r_index)/2];
+  while(l <= r){
+    while(v[l] < key_t) ++l;
+    while(v[r] > key_t) --r;
+    if(l <= r){
+      aux = v[r];
+      v[r] = v[l];
+      v[l] = aux;
+      ++l; --r;
+    }
+  }
+  merge(v, l_index, r);
+  merge(v, l, r_index);
+}
+
+void insertion(int *v, int size){
+  int key_t, i, j;
+  for(j=1;j<size;++j){
+    key_t = v[j];
+    i = j - 1;
+    while(i>=0 && v[i] > key_t){
+      v[i+1] = v[i];
+      v[i] = key_t;
+      --i;
+    }
+  }
+}
+#+END_SRC
+* TODO Linked lists
+- [ ] TODO [0/3]
+  - [ ] add tail function
+  - [ ] remove function
+  - [ ] Review everything
+
+** What are data structures?
+A good data structure would be an array. But,
+
+# Advantages of array:
+Being so easy-to-use and intuitive.
+
+# Disvantages of array
+A shitfest to realloc and becomes pretty couter-intuitive for complex use.
+
+# Acessing non-valid positions
+In C, it gets a n from memory.
+In other languages like java, it warns.
+
+** Linked Lists
+
+# Pointers are used to link each node of our list
+
+fa -> fb -> nil
+
+where fX is the guy, and arrow is the pointer.
+
+# Versatility
+
+The liked list is powerful. It can easily be resized, just point it to (eg; ff) instead of nil.
+
+# Why?
+
+It can be used to write specifically FREE-Memory instead of overwriting it.
+
+# How?
+Try this C code, look how it recursively the structure is called with a pointer. It has a structure with a item and a pointer to a new structure.
+ #+BEGIN_SRC c
+   typedef struct node{
+     int data;
+     struct node* next;
+   }node;
+ #+END_SRC
+
+** Applying create, add, search and many other functions in linked list.
+
+*** Creating a node 
+#+BEGIN_SRC c
+  node *new_node = NULL;
+#+END_SRC
+
+*** Adding elements
+#+BEGIN_SRC c
+  void add(node **head, int item){
+     node *new_node = (node*) malloc(sizeof(node));
+     new_node->item = item;
+     new_node->next = *head;
+     *head = new_node;
+   }
+#+END_SRC
+
+*** Search function
+#+BEGIN_SRC c
+  node* search(node *head, int item){
+    while(*head != NULL){
+      if(*head->item == item){
+        return *head;
+      }
+      head = head->next;
+    }
+      return NULL;    
+  }
+#+END_SRC
+
+*** TODO Remove function
+    This is a tricky one, you'll need to use a pointer to save the previous position and point it to the current->next
+#+BEGIN_SRC c
+//TODO
+#+END_SRC
+
+** Void, and fuction as a pointer
+Well, instead of having for example, a integer and a pointer, you have a pointer to another list (structure) of passagers, students, whatever..
+|----------+-----+----------+-----+----------+-----|
+| 2        | ->  | 5        | ->  | 9        | ->  |
+|----------+-----+----------+-----+----------+-----|
+| *bellow* | ->  | *bellow* | ->  | *bellow* | ->  |
+| passager | nil | passager | nil | passager | nil |
+|----------+-----+----------+-----+----------+-----|
+
+*** Void can point to almost everything!
+This can be pretty useful to change and reutilize the code.
+#+BEGIN_SRC c
+  struct node{
+    void* item;
+    node* next;
+  }
+#+END_SRC
+
+# But notice: In algorithims like the search one, you cannot check (*void == (void)item), so you'll be making a specific search function and pass it with an pointer.
+So, lets create a universal search function.
+#+BEGIN_SRC c
+// TODO
+node* search(node *head, void item){
+  while(*head != NULL){
+    if(*head->item == item){
+      return *head;
+    }
+    head = head->next;
+  }
+    return NULL;    
+}
+//TODO
+#+END_SRC
+* TODO Stack
+  - [ ] TODO [0/3]
+    - [ ] Review
+    - [ ] Add Stuff
+    - [ ] TODO
+# Context
+  TODO
+
+# "LIFO" - Last In, First Out.
+  LIFO consists in tree main operations:
+
+  - =Push=, adds a element to the stack top
+  - =Pop=, removes the stack top element
+  - =Peek=, shows the stack top element
+
+
+** Creating a Stack
+
+#+BEGIN_SRC c
+  #define MAX_STACK_SIZE 10
+
+  struct stack{
+    int current_size;
+    int items(MAX_STACK_SIZE);
+  };
+
+  stack* create_stack(){
+    stack *new_stack = (stack*) malloc(sizeof(stack));
+    new_stack -> current_size = 0;
+    return new_stack;
+  }
+#+END_SRC
+
+** PUSH function
+
+#+BEGIN_SRC c
+  void push(stack *stack, int item){
+    if(stack->current_size == MAX_STACK_SIZE){
+      printf("Stack Overflow\n");
+    }
+    else{
+      stack->items[stack->current_size++] = item; ++ -- 
+    }
+  }
+#+END_SRC
+
+*** Stack with lists and PUSH function
+
+    Note how the =push= above and =push_list= have similar headers due to abstractions.
+#+BEGIN_SRC c
+  struct *node{
+    int item;
+    node *next;
+  }
+
+  struct stack{
+    node *top
+  }
+
+  stack* create_stack(){
+    stack *new_stack = (stack*) malloc(sizeof(stack));
+    new_stack->top = NULL;
+    return new_stack;
+  }
+    
+  void push_list(stack *stack, int item){
+    node *new_top = (node*) malloc(sizeof(node));
+    new_top->item = item;
+    new_top->next = stack->top;
+    stack->top = new_top;
+  }
+#+END_SRC
+
+** POP Function
+#+BEGIN_SRC c
+  int pop(stack *stack){
+    if(is_empty(stack)){
+      printf("Stack underflow\n");
+      return -1;
+    }
+    else{
+      return stack->items[--stack->current_size];
+    }
+  }
+
+  int peek(stack *stack){
+    if(is_empty(stack)){
+      printf("Stack underflow\n");
+      return -1;
+    }
+    else{
+      return stack->items[stack->current_size - 1];
+    }
+  }
+#+END_SRC
