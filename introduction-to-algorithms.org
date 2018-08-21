@@ -120,7 +120,7 @@ Binary search found 73 with 6 interactions!
 ** Quick sort
 
 #+BEGIN_SRC c
-void merge(int *v, int l_index, int r_index){
+void qsort(int *v, int l_index, int r_index){
   if(l_index >= r_index){
     return ;
   }
@@ -138,8 +138,8 @@ void merge(int *v, int l_index, int r_index){
       ++l; --r;
     }
   }
-  merge(v, l_index, r);
-  merge(v, l, r_index);
+  qsort(v, l_index, r);
+  qsort(v, l, r_index);
 }
 
 void insertion(int *v, int size){
