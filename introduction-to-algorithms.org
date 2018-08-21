@@ -41,11 +41,13 @@ Binary search at 62
 Binary search at 68
 Binary search at 71
 Binary search at 73
+
+Binary search found 73 with 6 interactions!
 #+END_EXAMPLE
    
-   Binary found with only 6 intructions! That's because linear runs at (n) and binary at log(n): [[./img/search.png]]
+   Binary found with 67 less intructions! That's because linear runs at (n) and binary at log(n): [[./img/search.png]]
 
-   Sorting algorithms are also nice for comparing efficiency. Let's see how little the constant does when comparing a Merge sort =c1= versus Insertion sort =c2=, c1 > c2.
+   Sorting algorithms are also nice for comparing efficiency. Let's see how little the constant does when comparing a Merge sort =c1= versus Insertion sort =c2=, =c1= > =c2=.
    Merge runs at =n * log(n)=, insertion =2^n= and =n= = objects.
 
 #+BEGIN_SRC c
@@ -88,13 +90,13 @@ Binary search at 73
    Even with a 8 times bigger =c=, merge outruns the insertion from few as 7 numbers.
 
 * TODO Sorting algorithms
-- [ ] TODO [0/6]
-  - [ ] Insertion
-  - [ ] Merge
+- [-] TODO [3/6]
+  - [X] Insertion
+  - [X] Merge
   - [ ] Quicksort
   - [ ] qsort() function
-  - [ ] Provide a proper explanation
-  - [ ] codes at /src
+  - [ ] Provide a proper explanation for each sort
+  - [X] codes at /src
 
 ** Insertion Sort
 
@@ -191,7 +193,7 @@ It can be used to write specifically FREE-Memory instead of overwriting it.
 - How?
 Try this C code, look how it recursively the structure is called with a pointer. It has a structure with a item and a pointer to a new structure.
  #+BEGIN_SRC c
-   typedef struct node{
+   typedef struct{
      int data;
      struct node* next;
    }node;
@@ -216,12 +218,12 @@ Try this C code, look how it recursively the structure is called with a pointer.
 
 *** Search function
 #+BEGIN_SRC c
-  node* search(node *head, int item){
+  node* search(node **head, int item){
     while(*head != NULL){
-      if(*head->item == item){
+      if((*head)->item == item){
         return *head;
       }
-      head = head->next;
+      *head = (*head)->next;
     }
       return NULL;    
   }
@@ -245,10 +247,10 @@ Well, instead of having for example, a integer and a pointer, you have a pointer
 *** Void can point to almost everything!
 This can be pretty useful to change and reutilize the code.
 #+BEGIN_SRC c
-  struct node{
+  typedef struct{
     void* item;
-    node* next;
-  }
+    struct node* next;
+  }node;
 #+END_SRC
 
 # But notice: In algorithims like the search one, you cannot check (*void == (void)item), so you'll be making a specific search function and pass it with an pointer.
@@ -361,3 +363,4 @@ node* search(node *head, void item){
     }
   }
 #+END_SRC
+

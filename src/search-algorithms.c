@@ -13,14 +13,15 @@ int linear_search(int *v, int size, int item){
   return 0;
 }
 
-int binary_search(int *v, int bottom, int top, int item){
-l  int middle = floor((top + bottom) * pow(2, -1));
+int binary_search(int *v, int bottom, int top, int item, int *i){
+  int middle = floor((top + bottom) * pow(2, -1));
   printf("Binary search at %d\n", middle);
+  *i += 1;
   if(v[middle] < item){
-    binary_search(v, middle, top, item);
+    binary_search(v, middle, top, item, i);
   }
   else if (v[middle] > item){
-    binary_search(v, bottom, middle, item);2
+    binary_search(v, bottom, middle, item, i);
   }
   return middle;    
 }
@@ -28,10 +29,13 @@ l  int middle = floor((top + bottom) * pow(2, -1));
 int main(void){
   int size = 100;
   int *v = malloc(size * sizeof(int));
-  int i;
+  int i, j, item;
+  item = 73;
   for(i=0;i<size;i++){
     v[i] = i;
   }
-  linear_search(v, size, 73);
-  binary_search(v, 0, size, 73);
+  j = 0;
+  linear_search(v, size, item);
+  binary_search(v, 0, size, item, &j);
+  printf("\nBinary search found %d with %d interactions!\n", item, j);
 }
