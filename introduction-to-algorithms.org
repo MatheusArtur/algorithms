@@ -92,8 +92,8 @@ Binary search found 73 with 6 interactions!
 * TODO Sorting algorithms
 - [-] TODO [3/6]
   - [X] Insertion
-  - [X] Merge
-  - [ ] Quicksort
+  - [ ] Merge
+  - [X] Quicksort
   - [ ] qsort() function
   - [ ] Provide a proper explanation for each sort
   - [X] codes at /src
@@ -117,7 +117,7 @@ Binary search found 73 with 6 interactions!
 #+END_SRC
    Note that it starts with j = [FIRST+1] array position, since of course you'll be comparing to previous numbers.
 
-** Merge sort
+** Quick sort
 
 #+BEGIN_SRC c
 void merge(int *v, int l_index, int r_index){
@@ -155,6 +155,9 @@ void insertion(int *v, int size){
   }
 }
 #+END_SRC
+
+** Qsort
+
 * TODO Linked lists
 - [ ] TODO [0/3]
   - [ ] add tail function
