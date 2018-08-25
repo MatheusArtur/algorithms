@@ -89,15 +89,7 @@ Binary search found 73 with 6 interactions!
    
    Even with a 8 times bigger =c=, merge outruns the insertion from few as 7 numbers.
 
-* TODO Sorting algorithms
-- [-] TODO [3/6]
-  - [X] Insertion
-  - [ ] Merge
-  - [X] Quicksort
-  - [ ] qsort() function
-  - [ ] Provide a proper explanation for each sort
-  - [X] codes at /src
-
+* DONE Sorting algorithms
 ** Insertion Sort
 
    Insertion takes a array index number as a key and compares to all previous positions possible until =key > array[previous]=.
@@ -115,48 +107,147 @@ Binary search found 73 with 6 interactions!
     }
   }
 #+END_SRC
-   Note that it starts with j = [FIRST+1] array position, since of course you'll be comparing to previous numbers.
+   Note that it starts with j = [left_index + 1] array position, since of course you'll be comparing to previous numbers.
 
-** Quick sort
+** Divide and conquer
+   
+   The divide-and-conquer is a *recursive* approach to solve problems.
 
+   - *Divide* the problem in smaller ones.
+   - *Conquer* the smaller problems by solving them.
+   - *Combine* those smaller problems into the original one, solved.
+
+   A D&C sorting algorithm works just like that, sort the small pieces and glue then later.
+
+*** Quick sort
+
+    The idea here is use the key_t to sort the array by small partitions.
 #+BEGIN_SRC c
-void qsort(int *v, int l_index, int r_index){
-  if(l_index >= r_index){
-    return ;
-  }
-  int l, r, key_t, aux;
-  l = l_index;
-  r = r_index;
-  key_t = v[(l_index + r_index)/2];
-  while(l <= r){
-    while(v[l] < key_t) ++l;
-    while(v[r] > key_t) --r;
-    if(l <= r){
-      aux = v[r];
-      v[r] = v[l];
-      v[l] = aux;
-      ++l; --r;
+  void quick(int *v, int l_index, int r_index){
+    if(l_index >= r_index){
+      return ;
     }
+    int l, r, pivot, aux;
+    l = l_index;
+    r = r_index;
+    pivot = v[(l_index + r_index)/2];
+    while(l <= r){
+      while(v[l] < pivot) ++l;
+      while(v[r] > pivot) --r;
+      if(l <= r){
+	aux = v[r];
+	v[r] = v[l];
+	v[l] = aux;
+	++l; --r;
+      }
+    }
+    quick(v, l_index, r);
+    quick(v, l, r_index);
   }
-  qsort(v, l_index, r);
-  qsort(v, l, r_index);
-}
+#+END_SRC
+The two major partitions could be defined as left and right recursive calls at the end, following a sub-partition for individual pivots.
 
-void insertion(int *v, int size){
-  int key_t, i, j;
-  for(j=1;j<size;++j){
-    key_t = v[j];
-    i = j - 1;
-    while(i>=0 && v[i] > key_t){
-      v[i+1] = v[i];
-      v[i] = key_t;
-      --i;
+*** Merge sort
+
+    Merge is the very definition of D&C, the first you divide, setting =L[]= and =R[]= as your =v= universe (first and second for() loops), then you sort then (first while loop), and combine with the rest (2nd or 3rd while).
+#+BEGIN_SRC c
+void sort(int *v, int l, int m, int r){
+  int nl = m-l+1;
+  int nr = r-m;
+  int i, j, k;
+  int L[nl];
+  int R[nr];
+
+  for(i=0;i<nl;++i){
+    L[i] = v[l+i];
+  }
+  for(j=0;j<nr;++j){
+    R[j] = v[m+j+1];
+  }
+
+  i = 0;
+  j = 0;
+
+  
+  k = l;  
+  while(i<nl && j<nr){
+    if(L[i] <= R[j]){
+      v[k] = L[i];
+      ++i;
     }
+    else{
+      v[k] = R[j];
+      ++j;
+    }
+    ++k;
+  }
+
+  while(i<nl){
+    v[k] = L[i];
+    ++i;
+    ++k;
+  }
+  while(j<nr){
+    v[k] = R[j];
+    ++j;
+    ++k;
+  }
+}
+#+END_SRC
+
+This function is responsible for breaking the array into half/half on every recursive call.
+#+BEGIN_SRC c
+void merge(int *v, int l, int r){
+  if(l<r){
+    int m = floor((l+r) * pow(2, -1));
+    merge(v, l, m);
+    merge(v, m+1, r);
+    sort(v, l, m, r);
   }
 }
 #+END_SRC
 
 ** Qsort
+
+   With the =<stdlib.h>= qsort function it's possible to sort almost everything as it uses pointer to void. This is a example taken directly from the manual.
+#+BEGIN_SRC c
+static int
+cmpstringp(const void *p1, const void *p2)
+{
+  /* The actual arguments to this function are "pointers to
+     pointers to char", but strcmp(3) arguments are "pointers
+     to char", hence the following cast plus dereference */
+
+  return strcmp(* (char * const *) p1, * (char * const *) p2);
+}
+
+int
+main(int argc, char *argv[])
+{
+   if (argc < 2) {
+     fprintf(stderr, "Usage: %s <string>...\n", argv[0]);
+     exit(EXIT_FAILURE);
+   }
+
+   qsort(&argv[1], argc - 1, sizeof(char *), cmpstringp);
+
+   for (j = 1; j < argc; j++)
+     puts(argv[j]);
+
+  exit(EXIT_SUCCESS);
+}
+#+END_SRC
+It sorts all input strings (as words) in alphabetical order.
+
+Now a more basic example, sorting integers.
+#+BEGIN_SRC c
+int cmparray(const void *n1, const void *n2){
+  return (*(int*)n1 - *(int*)n2);
+}
+
+qsort(v, size, sizeof(int), cmparray);
+#+END_SRC
+Syntax is qsort(vector, vector-size, data-type, external-function);
 
 * TODO Linked lists
 - [ ] TODO [0/3]
