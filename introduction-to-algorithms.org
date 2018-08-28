@@ -209,35 +209,37 @@ void merge(int *v, int l, int r){
 
 ** Qsort
 
-   With the =<stdlib.h>= qsort function it's possible to sort almost everything as it uses pointer to void. This is a example taken directly from the manual.
+   With the =<stdlib.h>= qsort function it's possible to sort almost everything as it uses pointer to void. This is a example of sorting dynamic-allocated strings, adapted from the qsort manual.
 #+BEGIN_SRC c
-static int
-cmpstringp(const void *p1, const void *p2)
-{
-  /* The actual arguments to this function are "pointers to
-     pointers to char", but strcmp(3) arguments are "pointers
-     to char", hence the following cast plus dereference */
-
+static int cmpstringp(const void *p1, const void *p2){
   return strcmp(* (char * const *) p1, * (char * const *) p2);
 }
 
-int
-main(int argc, char *argv[])
-{
-   if (argc < 2) {
-     fprintf(stderr, "Usage: %s <string>...\n", argv[0]);
-     exit(EXIT_FAILURE);
-   }
+int main(void){
+  int track, size_t, slen, i, j;
+  char **v;
+  char aux[255];
 
-   qsort(&argv[1], argc - 1, sizeof(char *), cmpstringp);
+  scanf("%d", &size_t);
+  v = malloc(sizeof(char) * size_t);
 
-   for (j = 1; j < argc; j++)
-     puts(argv[j]);
+  for(i=0;i<size_t;++i){
+    scanf("%s", aux);
+    slen = strlen(aux);
+    v[i] = malloc(sizeof(char) * slen);
+    for(j=0;j<slen;++j){
+      v[i][j] = aux[j];
+    }
+  }
 
+  qsort(&v[0], size_t, sizeof(char *), cmpstringp);
+  for(i=0;i<size_t;++i){
+    puts(v[i]);
+  }
   exit(EXIT_SUCCESS);
 }
 #+END_SRC
-It sorts all input strings (as words) in alphabetical order.
+It sorts all input words (as strings) in alphabetical order.
 
 Now a more basic example, sorting integers.
 #+BEGIN_SRC c
@@ -249,43 +251,20 @@ qsort(v, size, sizeof(int), cmparray);
 #+END_SRC
 Syntax is qsort(vector, vector-size, data-type, external-function);
 
-* TODO Linked lists
-- [ ] TODO [0/3]
-  - [ ] add tail function
-  - [ ] remove function
-  - [ ] Review everything
-
-** What are data structures?
-A good data structure would be an array. But,
-
-- Advantages of array:
-Being so easy-to-use and intuitive.
-
-- Disvantages of array
-A shitfest to realloc and becomes pretty couter-intuitive for complex use.
-
-- Acessing non-valid positions
-In C, it gets a n from memory.
-In other languages like java, it warns.
-
-** Linked Lists
+* DONE Linked lists
 
 - Pointers are used to link each node of our list
-
 fa -> fb -> nil
-
 where fX is the guy, and arrow is the pointer.
 
 - Versatility
-
 The liked list is powerful. It can easily be resized, just point it to (eg; ff) instead of nil.
 
 - Why?
-
 It can be used to write specifically FREE-Memory instead of overwriting it.
 
 - How?
-Try this C code, look how it recursively the structure is called with a pointer. It has a structure with a item and a pointer to a new structure.
+Look how it recursively the structure is called with a pointer. It has a structure with a item and a pointer to a new structure.
  #+BEGIN_SRC c
    typedef struct{
      int data;
@@ -296,11 +275,14 @@ Try this C code, look how it recursively the structure is called with a pointer.
 ** Applying create, add, search and many other functions in linked list.
 
 *** Creating a node 
+    
+    Yep.
 #+BEGIN_SRC c
   node *new_node = NULL;
 #+END_SRC
 
 *** Adding elements
+
 #+BEGIN_SRC c
   void add(node **head, int item){
      node *new_node = (node*) malloc(sizeof(node));
@@ -310,66 +292,80 @@ Try this C code, look how it recursively the structure is called with a pointer.
    }
 #+END_SRC
 
-*** Search function
+Alternatively, you can add in the tail of the list, thus making the list equal to the input order
 #+BEGIN_SRC c
-  node* search(node **head, int item){
-    while(*head != NULL){
-      if((*head)->item == item){
-        return *head;
+  void add_tail(node **head, int new_data){
+    node *new_node = malloc(sizeof(node));
+    node *current = *head;
+    new_node->data = new_data;
+
+    while(current != NULL){
+      if(current->next == NULL){
+	current->next = new_node;
+	return ;
       }
-      *head = (*head)->next;
+      curent = current->next;
     }
-      return NULL;    
+    new_node->next = *head;
+    *head = new_node;
   }
 #+END_SRC
 
-*** TODO Remove function
+*** Search function
+
+#+BEGIN_SRC c
+  node* search(node *head, int item){
+    while(head != NULL){
+      if(head->data == item){
+	return head;
+      }
+      head = head->next;
+    }
+    return NULL;    
+  }
+#+END_SRC
+
+*** Lenght function
+
+    Basic stuff, might be usefull for sorting and other things
+#+BEGIN_SRC c
+  node* l_len(node *head){
+    int len = 0;
+    node* current;
+    for(current=head;current!=NULL;current=current->next){
+      ++len;
+    }
+    return len;
+  }
+#+END_SRC
+
+*** Remove function
+    
     This is a tricky one, you'll need to use a pointer to save the previous position and point it to the current->next
 #+BEGIN_SRC c
-//TODO
-#+END_SRC
+  void l_remove(node **head, int item){
+    node* current = *head;
+    node* last = NULL;
 
-** Void, and fuction as a pointer
-Well, instead of having for example, a integer and a pointer, you have a pointer to another list (structure) of passagers, students, whatever..
-|----------+-----+----------+-----+----------+-----|
-| 2        | ->  | 5        | ->  | 9        | ->  |
-|----------+-----+----------+-----+----------+-----|
-| *bellow* | ->  | *bellow* | ->  | *bellow* | ->  |
-| passager | nil | passager | nil | passager | nil |
-|----------+-----+----------+-----+----------+-----|
-
-*** Void can point to almost everything!
-This can be pretty useful to change and reutilize the code.
-#+BEGIN_SRC c
-  typedef struct{
-    void* item;
-    struct node* next;
-  }node;
-#+END_SRC
-
-# But notice: In algorithims like the search one, you cannot check (*void == (void)item), so you'll be making a specific search function and pass it with an pointer.
-So, lets create a universal search function.
-#+BEGIN_SRC c
-// TODO
-node* search(node *head, void item){
-  while(*head != NULL){
-    if(*head->item == item){
-      return *head;
+    while(current != NULL && current->data != item){
+      last = current;
+      current = current->next;
     }
-    head = head->next;
+  
+    if(current == NULL){
+      return ;
+    }
+    if(last == NULL){
+      ,*head = current->next;
+    }
+    else{
+      last->next = current->next;
+    }
+    free(current);
   }
-    return NULL;    
-}
-//TODO
 #+END_SRC
-* TODO Stack
-  - [ ] TODO [0/3]
-    - [ ] Review
-    - [ ] Add Stuff
-    - [ ] TODO
-- Context
-  TODO
 
+* DONE Stack
 - "LIFO" - Last In, First Out.
   LIFO consists in tree main operations:
 
@@ -380,81 +376,53 @@ node* search(node *head, void item){
 
 ** Creating a Stack
 
+   This is a stack with a list.
 #+BEGIN_SRC c
-  #define MAX_STACK_SIZE 10
+  typedef struct node{
+    int data;
+    struct node *next;
+  }node;
 
-  struct stack{
-    int current_size;
-    int items(MAX_STACK_SIZE);
-  };
-
-  stack* create_stack(){
-    stack *new_stack = (stack*) malloc(sizeof(stack));
-    new_stack -> current_size = 0;
-    return new_stack;
-  }
+  typedef struct{
+    int size;
+    node *top;
+  }stack;
 #+END_SRC
+You can also create a stack with a array, but please don't. 
 
 ** PUSH function
 
+   push will be adding a element in top of the stack, just like this;
+|-----+----+-----+----+-----+----+-----|
+|     |    |     |    |     |    |     |
+|     |    |     |    |     |    | nil |
+|     | -> |     | -> | nil | -> |  18 |
+|     |    | nil |    |  22 |    |  22 |
+| nil |    |  90 |    |  90 |    |  90 |
+|-----+----+-----+----+-----+----+-----|
+
+
 #+BEGIN_SRC c
-  void push(stack *stack, int item){
-    if(stack->current_size == MAX_STACK_SIZE){
-      printf("Stack Overflow\n");
-    }
-    else{
-      stack->items[stack->current_size++] = item; ++ -- 
-    }
-  }
-#+END_SRC
-
-*** Stack with lists and PUSH function
-
-    Note how the =push= above and =push_list= have similar headers due to abstractions.
-#+BEGIN_SRC c
-  struct *node{
-    int item;
-    node *next;
-  }
-
-  struct stack{
-    node *top
-  }
-
-  stack* create_stack(){
-    stack *new_stack = (stack*) malloc(sizeof(stack));
-    new_stack->top = NULL;
-    return new_stack;
-  }
-    
-  void push_list(stack *stack, int item){
-    node *new_top = (node*) malloc(sizeof(node));
-    new_top->item = item;
-    new_top->next = stack->top;
-    stack->top = new_top;
+  void push_list(stack *stk, int item){
+    node *new_top = malloc(sizeof(node));
+    new_top->data = item;
+    new_top->next = stk->top;
+    stk->top = new_top;
+    ++stk->size;
   }
 #+END_SRC
 
 ** POP Function
-#+BEGIN_SRC c
-  int pop(stack *stack){
-    if(is_empty(stack)){
-      printf("Stack underflow\n");
-      return -1;
-    }
-    else{
-      return stack->items[--stack->current_size];
-    }
-  }
 
-  int peek(stack *stack){
-    if(is_empty(stack)){
-      printf("Stack underflow\n");
-      return -1;
+   pop removes the top data of the stack making the bottom element the new top.
+#+BEGIN_SRC c
+  void pop(stack* stk){
+    if(stk == NULL){
+      return;
     }
-    else{
-      return stack->items[stack->current_size - 1];
-    }
+    node *aux = st->top;
+    st->top = st->top->next;
+    --stk->size;
   }
 #+END_SRC
-
+For peak, it's very trivial really.
