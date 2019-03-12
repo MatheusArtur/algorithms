@@ -1,0 +1,103 @@
+% Created 2019-03-12 Tue 19:55
+% Intended LaTeX compiler: pdflatex
+\documentclass[presentation]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usetheme{Hannover}
+\author{Matheus Artur, Luis Cabus}
+\date{\textit{<2019-03-12 Tue>} \today}
+\title{Tri-Graph}
+\hypersetup{
+ pdfauthor={Matheus Artur, Luis Cabus},
+ pdftitle={Tri-Graph},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.1 (Org mode 9.1.9)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+
+\section{O problema}
+\label{sec:org5bed760}
+\begin{frame}[fragile,label={sec:org164f4e5}]{O problema}
+ \begin{columns}
+\begin{column}{0.48\columnwidth}
+\begin{block}{Caracteristicas}
+    Dado um grafo de \texttt{N} linhas por \texttt{3} colunas, achar a menor distancia 
+entre os vertices \emph{top} e \emph{bottom} do meio, respeitando as seguintes caracteristicas:
+\begin{itemize}
+\item Peso no vertice
+\item Grafo acíclico
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.48\columnwidth}
+\begin{block}{Tri-Graph}
+\begin{center}
+\includegraphics[width=.9\linewidth]{/home/macc/1552418319.png}
+\label{org1c57383}
+\end{center}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\section{Resolvendo}
+\label{sec:org04233b2}
+\begin{frame}[label={sec:org5521bd4}]{Resolvendo}
+\begin{columns}
+\begin{column}{0.48\columnwidth}
+\begin{block}{Subproblema}
+Atualizar valor de cada \emph{node} relativo a menor distancia do inicio, linha por linha.
+\begin{center}
+\begin{tabular}{rrr}
+\hline
+nil & 7 & 12\\
+14 & 20 & 13\\
+28 & 16 & 25\\
+31 & 22 & 32\\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item Resposta: 22
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{0.48\columnwidth}
+\begin{block}{Tri-Graph}
+\begin{center}
+\includegraphics[width=.9\linewidth]{/home/macc/1552418319.png}
+\label{orgd2a2c8c}
+\end{center}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\section{Recorrencia}
+\label{sec:org8a2e288}
+\begin{frame}[label={sec:org59478c5}]{code}
+\begin{center}
+\includegraphics[width=.9\linewidth]{/home/macc/1552420489.png}
+\end{center}
+\end{frame}
+\end{document}

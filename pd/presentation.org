@@ -1,0 +1,68 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:2 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: Tri-Graph
+#+DATE: <2019-03-12 Tue>
+#+AUTHOR: Matheus Artur, Luis Cabus
+#+EMAIL: macc@ic.ufal.br
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.1 (Org mode 9.1.9)
+#+LATEX_CLASS: beamer
+#+LATEX_COMPILER: pdflatex
+#+DATE: \today
+#+startup: beamer
+#+LATEX_CLASS: beamer
+#+COLUMNS: %45ITEM %10BEAMER_env(Env) %10BEAMER_act(Act) %4BEAMER_col(Col) %8BEAMER_opt(Opt)
+#+BEAMER_THEME: Hannover
+
+* O problema
+** O problema
+*** Caracteristicas                                                 :B_block:
+    :PROPERTIES:
+    :BEAMER_COL: 0.48
+    :BEAMER_env: block
+    :END:
+    Dado um grafo de =N= linhas por =3= colunas, achar a menor distancia 
+entre os vertices /top/ e /bottom/ do meio, respeitando as seguintes caracteristicas:
+- Peso no vertice
+- Grafo acíclico
+
+*** Tri-Graph
+  :PROPERTIES:
+    :BEAMER_COL: 0.48
+    :BEAMER_env: block
+    :END:
+  #+LABEL:   fig:fig1
+  [[~/1552418319.png]]
+
+* Resolvendo
+** Resolvendo
+*** Subproblema                                                    :B_block:
+    :PROPERTIES:
+    :BEAMER_COL: 0.48
+    :BEAMER_env: block
+    :END:
+    Atualizar valor de cada /node/ relativo a menor distancia do inicio, linha por linha.
+|-----+----+----|
+| nil |  7 | 12 |
+|  14 | 20 | 13 |
+|  28 | 16 | 25 |
+|  31 | 22 | 32 |
+|-----+----+----|
+
+- Resposta: 22
+*** Tri-Graph
+  :PROPERTIES:
+    :BEAMER_COL: 0.48
+    :BEAMER_env: block
+    :END:
+  #+LABEL:   fig:fig1
+  [[~/1552418319.png]]
+
+* Recorrencia
+** code
+[[~/1552420489.png]]
