@@ -5,7 +5,7 @@
 #+OPTIONS: timestamp:t title:t toc:t todo:t |:t
 #+TITLE: Tri-Graph
 #+DATE: <2019-03-12 Tue>
-#+AUTHOR: Matheus Artur, Luis Cabus
+#+AUTHOR: Matheus Artur, Luis Cabus, Nicolas Leao
 #+EMAIL: macc@ic.ufal.br
 #+LANGUAGE: en
 #+SELECT_TAGS: export
